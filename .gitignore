@@ -1,0 +1,47 @@
+# =============== #
+# Unity generated #
+# =============== #
+[Ll]ibrary/
+[Tt]emp/
+[Oo]bj/
+[Bb]uild/
+[Bb]uilds/
+[Ll]ogs/
+[Mm]emoryCaptures/
+
+# ===================================== #
+# Visual Studio / MonoDevelop generated #
+# ===================================== #
+[Ee]xported[Oo]bj/
+.vs/
+/*.userprefs
+/*.csproj
+/*.pidb
+/*.suo
+/*.sln*
+/*.user
+/*.unityproj
+/*.booproj
+/*.svd
+
+# ============ #
+# OS generated #
+# ============ #
+.DS_Store
+._*
+Thumbs.db
+
+# ====================================== #
+# Rider project specific cache directory #
+# ====================================== #
+.idea/
+
+# =============== #
+# User-specific #
+# =============== #
+/[Aa]ssets/[Aa]sset[Ss]toreTools*
+
+# =========== #
+# Crash Logs #
+# =========== #
+sysinfo.txt
