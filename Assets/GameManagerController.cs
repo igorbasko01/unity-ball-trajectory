@@ -42,5 +42,10 @@ public class GameManagerController : MonoBehaviour
                 currentMoveable = targetMarker;
             }
         }
+
+        if (Input.GetKeyDown(KeyCode.Return))
+        {
+            ball.HandleBallHit(targetMarker.transform.position - ball.transform.position);
+        }
     }
 }

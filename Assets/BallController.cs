@@ -30,4 +30,15 @@ public class BallController : MonoBehaviour, IMoveable
         currentBallState = newState;
         currentBallState?.Enter();
     }
+
+    public void HandleMovingStateCompleted() {
+        ChangeState(new PositioningBallState(this));
+    }
+
+    public void HandleBallHit(Vector3 force) {
+        if (currentBallState is MovingBallState) {
+            return;
+        }
+        ChangeState(new MovingBallState(this, force));
+    }
 }
