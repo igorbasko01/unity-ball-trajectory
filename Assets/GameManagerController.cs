@@ -1,13 +1,14 @@
-using System.Collections;
-using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 
 public class GameManagerController : MonoBehaviour
 {
     [SerializeField] private TargetMarkerController targetMarker;
     [SerializeField] private BallController ball;
+    [SerializeField] private TextMeshProUGUI ballFlightTimeText;
     private IMoveable currentMoveable;
     private float ballFlightSeconds = 0.5f;
+    public float BallFlightSeconds => ballFlightSeconds;
     private float gravity = -9.81f;
     
     // Start is called before the first frame update
@@ -49,6 +50,18 @@ public class GameManagerController : MonoBehaviour
         {
             ball.HandleBallHit(CalculateForce());
         }
+
+        if (Input.GetKeyDown(KeyCode.Minus))
+        {
+            ballFlightSeconds -= 0.1f;
+            ballFlightSeconds = Mathf.Round(ballFlightSeconds * 10) / 10;
+        }
+        if (Input.GetKeyDown(KeyCode.Equals))
+        {
+            ballFlightSeconds += 0.1f;
+            ballFlightSeconds = Mathf.Round(ballFlightSeconds * 10) / 10;
+        }
+        ballFlightTimeText.text = $"Ball Flight Time: {ballFlightSeconds}s";
     }
 
     private Vector3 CalculateForce() {

@@ -56,7 +56,7 @@ public class MovingBallState : BallState
     public event Action OnTimeElapsed;
     private Vector3 initialPosition;
     private float timer = 0;
-    private readonly float timeToWait = 5.0f;
+    private readonly float timeToWait = 3.0f;
     private readonly Vector3 initialHitForce;
     private readonly Rigidbody rb;
     public MovingBallState(BallController ballController, Vector3 hitForce) : base(ballController)
