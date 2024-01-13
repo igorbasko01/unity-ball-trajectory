@@ -12,13 +12,12 @@ public abstract class BallState : IState
     public abstract void Enter();
     public abstract void Update();
     public abstract void Exit();
-
-    public abstract void HandleBallPositioning(Vector3 direction, float positioningSpeed);
 }
 
 public class PositioningBallState : BallState
 {
-    private Rigidbody rb;
+    private readonly float positioningSpeed = 5.0f;
+    private readonly Rigidbody rb;
 
     public PositioningBallState(BallController ballController) : base(ballController)
     {
@@ -29,6 +28,7 @@ public class PositioningBallState : BallState
     {
         Debug.Log("Entering Positioning State");
         rb.isKinematic = true;
+        ballController.OnMove += HandleBallPositioning;
     }
 
     public override void Update()
@@ -39,9 +39,11 @@ public class PositioningBallState : BallState
     public override void Exit()
     {
         Debug.Log("Exiting Positioning State");
+        rb.isKinematic = false;
+        ballController.OnMove -= HandleBallPositioning;
     }
 
-    public override void HandleBallPositioning(Vector3 direction, float positioningSpeed)
+    private void HandleBallPositioning(Vector3 direction)
     {
         ballController.transform.position += positioningSpeed * Time.deltaTime * direction;
     }

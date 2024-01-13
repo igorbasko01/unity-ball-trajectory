@@ -1,8 +1,10 @@
+using System;
 using UnityEngine;
 
 public class BallController : MonoBehaviour, IMoveable
 {
-    [SerializeField] private float positioningSpeed = 5.0f;
+    public delegate void MoveEvent(Vector3 direction);
+    public event MoveEvent OnMove;
     private BallState currentBallState;
 
     // Start is called before the first frame update
@@ -19,7 +21,7 @@ public class BallController : MonoBehaviour, IMoveable
 
     public void Move(Vector3 direction)
     {
-        currentBallState?.HandleBallPositioning(direction, positioningSpeed);
+        OnMove?.Invoke(direction);
     }
 
     public void ChangeState(BallState newState)
