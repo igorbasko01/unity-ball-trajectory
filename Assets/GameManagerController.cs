@@ -6,6 +6,7 @@ public class GameManagerController : MonoBehaviour
     [SerializeField] private TargetMarkerController targetMarker;
     [SerializeField] private BallController ball;
     [SerializeField] private TextMeshProUGUI ballFlightTimeText;
+    [SerializeField] private Transform netIntersectionMarker;
     private IMoveable currentMoveable;
     private float ballFlightSeconds = 0.5f;
     public float BallFlightSeconds => ballFlightSeconds;
@@ -62,6 +63,7 @@ public class GameManagerController : MonoBehaviour
             ballFlightSeconds = Mathf.Round(ballFlightSeconds * 10) / 10;
         }
         ballFlightTimeText.text = $"Ball Flight Time: {ballFlightSeconds}s";
+        PlaceNetIntersectionMarker();
     }
 
     private Vector3 CalculateForce() {
@@ -74,5 +76,25 @@ public class GameManagerController : MonoBehaviour
         var velocityZ = distanceZ / ballFlightSeconds;
         var velocityY = (distanceY - 0.5f * gravity * ballFlightSeconds * ballFlightSeconds) / ballFlightSeconds;
         return new Vector3(velocityX, velocityY, velocityZ);
+    }
+
+    private void PlaceNetIntersectionMarker() {
+        Vector3 ballPosition = ball.transform.position;
+        Vector3 targetPosition = targetMarker.transform.position;
+        Vector2 p1 = new(ballPosition.x, ballPosition.z);
+        Vector2 p2 = new(targetPosition.x, targetPosition.z);
+        Vector2 p3 = new(-1000, 0);
+        Vector2 p4 = new(1000, 0);
+        Vector2 netIntersectionPosition = Vector2.zero;
+        float denominator = (p4.y - p3.y) * (p2.x - p1.x) - (p4.x - p3.x) * (p2.y - p1.y);
+        if (denominator == 0)
+        {
+            netIntersectionMarker.position = netIntersectionPosition;
+            return;
+        }
+        float ua = ((p4.x - p3.x) * (p1.y - p3.y) - (p4.y - p3.y) * (p1.x - p3.x)) / denominator;
+        netIntersectionPosition.x = p1.x + ua * (p2.x - p1.x);
+        netIntersectionPosition.y = p1.y + ua * (p2.y - p1.y);
+        netIntersectionMarker.position = new(netIntersectionPosition.x, 0, netIntersectionPosition.y);
     }
 }
