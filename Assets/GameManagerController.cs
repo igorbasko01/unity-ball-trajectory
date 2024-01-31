@@ -7,6 +7,7 @@ public class GameManagerController : MonoBehaviour
     [SerializeField] private BallController ball;
     [SerializeField] private TextMeshProUGUI ballFlightTimeText;
     [SerializeField] private Transform netIntersectionMarker;
+    [SerializeField] private TextMeshProUGUI debugText;
     private IMoveable currentMoveable;
     private float ballFlightSeconds = 0.5f;
     public float BallFlightSeconds => ballFlightSeconds;
@@ -62,7 +63,8 @@ public class GameManagerController : MonoBehaviour
             ballFlightSeconds += 0.1f;
             ballFlightSeconds = Mathf.Round(ballFlightSeconds * 10) / 10;
         }
-        ballFlightTimeText.text = $"Ball Flight Time: {ballFlightSeconds}s";
+        var willClearNet = WillClearNet(CalculateDistanceToNet(), 1.07f);
+        ballFlightTimeText.text = $"Ball Flight Time: {ballFlightSeconds}s, Clear Net: {willClearNet}";
         PlaceNetIntersectionMarker();
     }
 
@@ -78,7 +80,7 @@ public class GameManagerController : MonoBehaviour
         return new Vector3(velocityX, velocityY, velocityZ);
     }
 
-    private void PlaceNetIntersectionMarker() {
+    private Vector3 CalculateNetIntersectionMarker() {
         Vector3 ballPosition = ball.transform.position;
         Vector3 targetPosition = targetMarker.transform.position;
         Vector2 p1 = new(ballPosition.x, ballPosition.z);
@@ -89,12 +91,36 @@ public class GameManagerController : MonoBehaviour
         float denominator = (p4.y - p3.y) * (p2.x - p1.x) - (p4.x - p3.x) * (p2.y - p1.y);
         if (denominator == 0)
         {
-            netIntersectionMarker.position = netIntersectionPosition;
-            return;
+            return netIntersectionPosition;
         }
         float ua = ((p4.x - p3.x) * (p1.y - p3.y) - (p4.y - p3.y) * (p1.x - p3.x)) / denominator;
         netIntersectionPosition.x = p1.x + ua * (p2.x - p1.x);
         netIntersectionPosition.y = p1.y + ua * (p2.y - p1.y);
-        netIntersectionMarker.position = new(netIntersectionPosition.x, 0, netIntersectionPosition.y);
+        return new(netIntersectionPosition.x, 0, netIntersectionPosition.y);
+    }
+
+    private void PlaceNetIntersectionMarker() {
+        netIntersectionMarker.position = CalculateNetIntersectionMarker();
+    }
+
+    private bool WillClearNet(float distanceToNet, float netHeight) {
+        Vector3 initialVelocity = CalculateForce();
+
+        float timeToNet = distanceToNet / initialVelocity.z;
+
+        float ballHeight = ball.transform.position.y;
+
+        float heightAtNet = ballHeight + (initialVelocity.y * ballFlightSeconds + 0.5f * gravity * timeToNet * timeToNet);
+
+        debugText.text = $"Distance to net: {distanceToNet:F2}, height at net: {heightAtNet:F2}, initial height: {ballHeight:F2}";
+
+        return heightAtNet > netHeight;
+    }
+
+    private float CalculateDistanceToNet() {
+        Vector3 ballPosition = ball.transform.position;
+        Vector3 ballWithoutHeight = new(ballPosition.x, 0, ballPosition.z);
+        Vector3 intersectionPosition = CalculateNetIntersectionMarker();
+        return Vector3.Distance(ballWithoutHeight, intersectionPosition);
     }
 }
