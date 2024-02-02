@@ -1,3 +1,4 @@
+using System;
 using TMPro;
 using UnityEngine;
 
@@ -63,7 +64,7 @@ public class GameManagerController : MonoBehaviour
             ballFlightSeconds += 0.1f;
             ballFlightSeconds = Mathf.Round(ballFlightSeconds * 10) / 10;
         }
-        var willClearNet = WillClearNet(CalculateDistanceToNet(), 1.07f);
+        var willClearNet = WillClearNet(CalculateDistanceToNet(), 1.1f);
         ballFlightTimeText.text = $"Ball Flight Time: {ballFlightSeconds}s, Clear Net: {willClearNet}";
         PlaceNetIntersectionMarker();
     }
@@ -106,13 +107,13 @@ public class GameManagerController : MonoBehaviour
     private bool WillClearNet(float distanceToNet, float netHeight) {
         Vector3 initialVelocity = CalculateForce();
 
-        float timeToNet = distanceToNet / initialVelocity.z;
+        float timeToNet = Math.Abs(distanceToNet) / Math.Abs(initialVelocity.z);
 
         float ballHeight = ball.transform.position.y;
 
-        float heightAtNet = ballHeight + (initialVelocity.y * ballFlightSeconds + 0.5f * gravity * timeToNet * timeToNet);
+        float heightAtNet = ballHeight + initialVelocity.y * timeToNet + 0.5f * gravity * timeToNet * timeToNet;
 
-        debugText.text = $"Distance to net: {distanceToNet:F2}, height at net: {heightAtNet:F2}, initial height: {ballHeight:F2}";
+        debugText.text = $"Distance to net: {distanceToNet:F2}, height at net: {heightAtNet:F2}, initial height: {ballHeight:F2}, time to net: {timeToNet:F2}";
 
         return heightAtNet > netHeight;
     }
