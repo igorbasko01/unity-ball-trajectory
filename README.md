@@ -15,3 +15,10 @@ To control the ball's height position, use the `q` and `e` keys.
 To control the time of flight, use the `+` and `-` keys.
 
 Press `Enter` to launch the ball.
+
+### Screenshots
+Game view, the small dot in the center is the ball. The white circle on the floor is the target marker. The ball should land there.
+![](docs/ball_trajectory.png)
+
+A sample video of how the different parameters affect the flight of the ball.
+![](docs/ball_trajectory_net_clearance_480p.mov)
