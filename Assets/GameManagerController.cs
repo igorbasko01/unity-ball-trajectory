@@ -9,6 +9,7 @@ public class GameManagerController : MonoBehaviour
     [SerializeField] private TextMeshProUGUI ballFlightTimeText;
     [SerializeField] private Transform netIntersectionMarker;
     [SerializeField] private TextMeshProUGUI debugText;
+    [SerializeField] private float fixedDeltaTime = 0.02f;
     private IMoveable currentMoveable;
     private float ballFlightSeconds = 0.5f;
     public float BallFlightSeconds => ballFlightSeconds;
@@ -67,6 +68,20 @@ public class GameManagerController : MonoBehaviour
         var willClearNet = WillClearNet(CalculateDistanceToNet(), 1.1f);
         ballFlightTimeText.text = $"Ball Flight Time: {ballFlightSeconds}s, Clear Net: {willClearNet}";
         PlaceNetIntersectionMarker();
+
+        if (Input.GetKeyDown(KeyCode.Z))
+        {
+            if (Time.fixedDeltaTime < 0.02f)
+            {
+                fixedDeltaTime = 0.02f;
+                Time.fixedDeltaTime = 0.02f;
+            }
+            else
+            {
+                fixedDeltaTime = 0.01f;
+                Time.fixedDeltaTime = 0.01f;
+            }
+        }
     }
 
     private Vector3 CalculateForce() {
